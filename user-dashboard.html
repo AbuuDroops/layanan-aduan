@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Layanan Aduan</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ===== USER DASHBOARD STYLES ===== */
+    .dashboard-container {
+      min-height: 100vh;
+      background: #0f1419;
+      padding: 30px 20px;
+      padding-top: 110px;
+    }
+
+    .dashboard-max-width {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      background: #1a1f2e;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #333;
+    }
+
+    .dashboard-header h1 {
+      font-size: 28px;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    .user-menu {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .user-name {
+      color: #b0b0b0;
+      font-size: 14px;
+    }
+
+    .btn-logout {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .btn-logout:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(244, 67, 54, 0.3);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .dashboard-card {
+      background: #1a1f2e;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .dashboard-card:hover {
+      border-color: #2196F3;
+      box-shadow: 0 8px 24px rgba(33, 150, 243, 0.2);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-header h2 {
+      font-size: 18px;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    .btn-create {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-create:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(33, 150, 243, 0.3);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .stat-mini {
+      background: rgba(33, 150, 243, 0.1);
+      border: 1px solid rgba(33, 150, 243, 0.2);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-mini .value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2196F3;
+    }
+
+    .stat-mini .label {
+      font-size: 12px;
+      color: #b0b0b0;
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .report-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .report-item {
+      background: #252c3d;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .report-item:hover {
+      border-color: #2196F3;
+      background: #2a3140;
+    }
+
+    .report-item-info {
+      flex: 1;
+    }
+
+    .report-title {
+      color: #ffffff;
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .report-meta {
+      color: #666;
+      font-size: 12px;
+      display: flex;
+      gap: 16px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .status-pending {
+      background: rgba(255, 152, 0, 0.1);
+      color: #FFB74D;
+    }
+
+    .status-processing {
+      background: rgba(33, 150, 243, 0.1);
+      color: #64B5F6;
+    }
+
+    .status-completed {
+      background: rgba(76, 175, 80, 0.1);
+      color: #81C784;
+    }
+
+    .btn-view {
+      padding: 6px 12px;
+      background: rgba(33, 150, 243, 0.2);
+      color: #2196F3;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-view:hover {
+      background: rgba(33, 150, 243, 0.3);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state-text {
+      margin-bottom: 20px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .dashboard-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .report-item {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="index.html">Layanan Aduan</a>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><span class="nav-link" style="color: #2196F3;">Dashboard</span></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Dashboard Container -->
+  <div class="dashboard-container">
+    <div class="dashboard-max-width">
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <div>
+          <h1>Dashboard Saya</h1>
+          <p style="color: #666; margin: 8px 0 0;">Kelola laporan dan pantau status Anda</p>
+        </div>
+        <div class="user-menu">
+          <div class="user-name" id="userName">User</div>
+          <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+      </div>
+
+      <!-- Main Grid -->
+      <div class="dashboard-grid">
+        <!-- Create Report Card -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h2>Buat Laporan</h2>
+          </div>
+          <p style="color: #b0b0b0; margin-bottom: 20px; font-size: 14px;">
+            Sampaikan laporan atau pengaduan Anda dengan mudah dan aman
+          </p>
+          <button class="btn-create" onclick="createReport()">Buat Laporan Baru</button>
+          
+          <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #333;">
+            <div class="stats-grid">
+              <div class="stat-mini">
+                <div class="value">12</div>
+                <div class="label">Total</div>
+              </div>
+              <div class="stat-mini">
+                <div class="value">3</div>
+                <div class="label">Pending</div>
+              </div>
+              <div class="stat-mini">
+                <div class="value">9</div>
+                <div class="label">Selesai</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Info Card -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h2>Informasi Akun</h2>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div>
+              <label style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Email</label>
+              <p style="color: #ffffff; margin: 6px 0 0; font-size: 14px;" id="userEmail">user@example.com</p>
+            </div>
+            <div>
+              <label style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Bergabung Sejak</label>
+              <p style="color: #ffffff; margin: 6px 0 0; font-size: 14px;" id="joinDate">14 April 2026</p>
+            </div>
+            <div>
+              <label style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Status Akun</label>
+              <p style="color: #4CAF50; margin: 6px 0 0; font-size: 14px;">✓ Aktif</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reports List -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <h2>Laporan Saya</h2>
+        </div>
+        
+        <div class="report-list" id="reportList">
+          <div class="report-item">
+            <div class="report-item-info">
+              <div class="report-title">Perbaikan Jalan Rusak</div>
+              <div class="report-meta">
+                <span>Infrastruktur</span>
+                <span>2026-04-12</span>
+              </div>
+            </div>
+            <span class="status-badge status-completed">Selesai</span>
+            <button class="btn-view" onclick="viewReport(1)">Lihat</button>
+          </div>
+
+          <div class="report-item">
+            <div class="report-item-info">
+              <div class="report-title">Lampu Jalan Mati</div>
+              <div class="report-meta">
+                <span>Pemeliharaan</span>
+                <span>2026-04-10</span>
+              </div>
+            </div>
+            <span class="status-badge status-processing">Diproses</span>
+            <button class="btn-view" onclick="viewReport(2)">Lihat</button>
+          </div>
+
+          <div class="report-item">
+            <div class="report-item-info">
+              <div class="report-title">Masalah Pelayanan Publik</div>
+              <div class="report-meta">
+                <span>Pelayanan</span>
+                <span>2026-04-08</span>
+              </div>
+            </div>
+            <span class="status-badge status-pending">Pending</span>
+            <button class="btn-view" onclick="viewReport(3)">Lihat</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is logged in as user
+    function checkUserAccess() {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      if (!user.email || user.role !== 'user') {
+        // Redirect ke login jika bukan user
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Set user info
+      document.getElementById('userName').textContent = user.name || 'User';
+      document.getElementById('userEmail').textContent = user.email || 'user@example.com';
+    }
+
+    function logout() {
+      if (confirm('Apakah Anda ingin keluar?')) {
+        localStorage.removeItem('user');
+        window.location.href = 'index.html';
+      }
+    }
+
+    function createReport() {
+      alert('Fitur membuat laporan akan segera tersedia!');
+      // TODO: Redirect ke form membuat laporan
+      // window.location.href = 'create-report.html';
+    }
+
+    function viewReport(id) {
+      alert('Membuka laporan #' + id);
+      // TODO: Redirect ke detail laporan
+      // window.location.href = 'report-detail.html?id=' + id;
+    }
+
+    // Check access on page load
+    checkUserAccess();
+  </script>
+</body>
+</html>
