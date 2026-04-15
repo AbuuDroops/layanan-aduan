@@ -312,15 +312,15 @@
           <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #333;">
             <div class="stats-grid">
               <div class="stat-mini">
-                <div class="value">12</div>
+                <div class="value" id="userTotalReports">0</div>
                 <div class="label">Total</div>
               </div>
               <div class="stat-mini">
-                <div class="value">3</div>
+                <div class="value" id="userPendingReports">0</div>
                 <div class="label">Pending</div>
               </div>
               <div class="stat-mini">
-                <div class="value">9</div>
+                <div class="value" id="userCompletedReports">0</div>
                 <div class="label">Selesai</div>
               </div>
             </div>
@@ -396,43 +396,9 @@
     </div>
   </div>
 
+  <script src="app.js"></script>
   <script>
-    // Check if user is logged in as user
-    function checkUserAccess() {
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      
-      if (!user.email || user.role !== 'user') {
-        // Redirect ke login jika bukan user
-        window.location.href = 'login.html';
-        return;
-      }
-
-      // Set user info
-      document.getElementById('userName').textContent = user.name || 'User';
-      document.getElementById('userEmail').textContent = user.email || 'user@example.com';
-    }
-
-    function logout() {
-      if (confirm('Apakah Anda ingin keluar?')) {
-        localStorage.removeItem('user');
-        window.location.href = 'index.html';
-      }
-    }
-
-    function createReport() {
-      alert('Fitur membuat laporan akan segera tersedia!');
-      // TODO: Redirect ke form membuat laporan
-      // window.location.href = 'create-report.html';
-    }
-
-    function viewReport(id) {
-      alert('Membuka laporan #' + id);
-      // TODO: Redirect ke detail laporan
-      // window.location.href = 'report-detail.html?id=' + id;
-    }
-
-    // Check access on page load
-    checkUserAccess();
+    renderUserDashboard();
   </script>
 </body>
 </html>

@@ -371,7 +371,9 @@
     </div>
   </div>
 
+  <script src="app.js"></script>
   <script>
+    initDatabase();
     function checkPasswordStrength(password) {
       const strengthBar = document.getElementById('strengthBar');
       let strength = 0;
@@ -388,78 +390,6 @@
         strengthBar.classList.add('medium');
       } else {
         strengthBar.classList.add('strong');
-      }
-    }
-
-    function handleRegister(event) {
-      event.preventDefault();
-
-      const fullName = document.getElementById('fullName').value;
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-      const terms = document.getElementById('terms').checked;
-      const messageDiv = document.getElementById('message');
-
-      // Validasi input
-      if (!fullName || !email || !password || !confirmPassword) {
-        showMessage('Semua field harus diisi', 'error');
-        return;
-      }
-
-      // Validasi format email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        showMessage('Format email tidak valid', 'error');
-        return;
-      }
-
-      // Validasi panjang password
-      if (password.length < 8) {
-        showMessage('Password minimal 8 karakter', 'error');
-        return;
-      }
-
-      // Validasi password match
-      if (password !== confirmPassword) {
-        showMessage('Password dan konfirmasi password tidak sesuai', 'error');
-        return;
-      }
-
-      // Validasi terms
-      if (!terms) {
-        showMessage('Anda harus menyetujui syarat & ketentuan', 'error');
-        return;
-      }
-
-      // Simulasi register (di production, kirim ke Supabase)
-      console.log('Register attempt:', { fullName, email, password, role: 'user' });
-      
-      // TODO: Kirim ke Supabase dengan role 'user'
-      // Data yang akan disimpan:
-      // {
-      //   email: email,
-      //   full_name: fullName,
-      //   password: password,
-      //   role: 'user'  <-- SELALU 'user' untuk register via web
-      // }
-      
-      showMessage('Pendaftaran berhasil! Redirecting to login...', 'success');
-      
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 2000);
-    }
-
-    function showMessage(text, type) {
-      const messageDiv = document.getElementById('message');
-      messageDiv.textContent = text;
-      messageDiv.className = `message show ${type}`;
-      
-      if (type === 'error') {
-        setTimeout(() => {
-          messageDiv.classList.remove('show');
-        }, 4000);
       }
     }
   </script>

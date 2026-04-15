@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buat Laporan Baru - Layanan Aduan</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #0f1419;
+      color: #ffffff;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .page-nav {
+      padding: 20px 30px;
+      background: #171c26;
+      border-bottom: 1px solid #333;
+    }
+    .page-nav a {
+      color: #2196F3;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .page-container {
+      max-width: 760px;
+      margin: 40px auto;
+      padding: 0 20px 40px;
+    }
+    .report-card {
+      background: #1a1f2e;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+    .report-card h1 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 28px;
+    }
+    .report-card p {
+      color: #b0b0b0;
+      margin-top: 0;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    .report-form {
+      display: grid;
+      gap: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-group label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      background: #0f1419;
+      color: #ffffff;
+      font-size: 15px;
+      resize: vertical;
+    }
+    .form-group textarea {
+      min-height: 160px;
+    }
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .btn-primary,
+    .btn-secondary {
+      border: none;
+      border-radius: 10px;
+      padding: 14px 22px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+      color: #ffffff;
+    }
+    .btn-secondary {
+      background: #252c3d;
+      color: #b0b0b0;
+    }
+    .btn-primary:hover,
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+    .message {
+      display: none;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      text-align: center;
+    }
+    .message.show {
+      display: block;
+    }
+    .message.success {
+      background: rgba(76, 175, 80, 0.12);
+      color: #c8e6c9;
+    }
+    .message.error {
+      background: rgba(244, 67, 54, 0.12);
+      color: #ffcdd2;
+    }
+    @media (max-width: 640px) {
+      .report-card {
+        padding: 24px;
+      }
+      .form-actions {
+        justify-content: stretch;
+      }
+      .btn-secondary,
+      .btn-primary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="page-nav">
+    <a href="user-dashboard.html">← Kembali ke Dashboard</a>
+  </nav>
+
+  <div class="page-container">
+    <div class="report-card">
+      <h1>Buat Laporan Baru</h1>
+      <p>Isi detail laporan Anda dan kirim ke tim admin. Setiap laporan akan disimpan dengan status <strong>pending</strong> sampai ditangani.</p>
+
+      <div class="message" id="message"></div>
+
+      <form class="report-form" id="createReportForm" onsubmit="handleCreateReport(event)">
+        <div class="form-group">
+          <label for="reportName">Nama Pelapor</label>
+          <input type="text" id="reportName" name="reportName" placeholder="Nama lengkap" readonly required>
+        </div>
+
+        <div class="form-group">
+          <label for="reportWhatsapp">No. WhatsApp</label>
+          <input type="tel" id="reportWhatsapp" name="reportWhatsapp" placeholder="Contoh: 081234567890" required>
+        </div>
+
+        <div class="form-group">
+          <label for="reportSatker">Satker Tujuan</label>
+          <select id="reportSatker" name="reportSatker" required>
+            <option value="">Pilih satuan kerja</option>
+            <option value="Dinas Pekerjaan Umum">Tekinfokom</option>
+            <option value="Dinas Kebersihan">KaroAK</option>
+            <option value="Dinas Pendidikan">Karokuum</option>
+            <option value="Satpol PP">BiroAK</option>
+            <option value="Dinas Lingkungan Hidup">Roum</option>
+        
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="reportLocation">Lokasi Kejadian</label>
+          <input type="text" id="reportLocation" name="reportLocation" placeholder="Contoh: Jl. Melati No. 12, Kecamatan X" required>
+        </div>
+
+        <div class="form-group">
+          <label for="reportDescription">Aduan</label>
+          <textarea id="reportDescription" name="reportDescription" placeholder="Jelaskan aduan Anda secara lengkap" required></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" onclick="window.location.href='user-dashboard.html'">Batal</button>
+          <button type="submit" class="btn-primary">Kirim Laporan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initDatabase();
+      const user = requireRole('user');
+      if (user) {
+        const nameField = document.getElementById('reportName');
+        if (nameField) nameField.value = user.name || '';
+      }
+    });
+  </script>
+</body>
+</html>

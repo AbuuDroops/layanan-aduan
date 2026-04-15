@@ -383,22 +383,22 @@
       <div class="dashboard-grid">
         <div class="stat-card">
           <div class="stat-label">Total Laporan</div>
-          <div class="stat-value">1,234</div>
+          <div class="stat-value" id="totalReports">0</div>
           <div class="stat-change">↑ 12% dari bulan lalu</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Laporan Pending</div>
-          <div class="stat-value">45</div>
+          <div class="stat-value" id="pendingReports">0</div>
           <div class="stat-change">Perlu ditangani</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Laporan Selesai</div>
-          <div class="stat-value">1,189</div>
+          <div class="stat-value" id="completedReports">0</div>
           <div class="stat-change">96.4% completion rate</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Total Pengguna</div>
-          <div class="stat-value">892</div>
+          <div class="stat-value" id="totalUsers">0</div>
           <div class="stat-change">↑ 8% dari bulan lalu</div>
         </div>
       </div>
@@ -411,53 +411,15 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Pengguna</th>
-                <th>Kategori</th>
+                <th>Nama Pelapor</th>
+                <th>Satker</th>
+                <th>Lokasi</th>
                 <th>Status</th>
                 <th>Tanggal</th>
                 <th>Aksi</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>#ADU001</td>
-                <td>John Doe</td>
-                <td>Keamanan</td>
-                <td><span class="status-badge status-pending">Pending</span></td>
-                <td>2026-04-14</td>
-                <td>
-                  <div class="action-buttons">
-                    <button class="btn-small btn-view">Lihat</button>
-                    <button class="btn-small btn-edit">Edit</button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>#ADU002</td>
-                <td>Jane Smith</td>
-                <td>Pelayanan</td>
-                <td><span class="status-badge status-processing">Diproses</span></td>
-                <td>2026-04-13</td>
-                <td>
-                  <div class="action-buttons">
-                    <button class="btn-small btn-view">Lihat</button>
-                    <button class="btn-small btn-edit">Edit</button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>#ADU003</td>
-                <td>Bob Wilson</td>
-                <td>Infrastruktur</td>
-                <td><span class="status-badge status-completed">Selesai</span></td>
-                <td>2026-04-12</td>
-                <td>
-                  <div class="action-buttons">
-                    <button class="btn-small btn-view">Lihat</button>
-                    <button class="btn-small btn-edit">Edit</button>
-                  </div>
-                </td>
-              </tr>
+            <tbody id="reportTableBody">
             </tbody>
           </table>
         </div>
@@ -465,38 +427,9 @@
     </main>
   </div>
 
+  <script src="app.js"></script>
   <script>
-    // Check if user is logged in as admin
-    function checkAdminAccess() {
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      
-      if (!user.email || user.role !== 'admin') {
-        // Redirect ke login jika bukan admin
-        window.location.href = 'login.html';
-        return;
-      }
-
-      // Set user name
-      document.getElementById('userName').textContent = user.name || 'Admin User';
-    }
-
-    function logout() {
-      if (confirm('Apakah Anda ingin keluar?')) {
-        localStorage.removeItem('user');
-        window.location.href = 'index.html';
-      }
-    }
-
-    // Set active menu
-    document.querySelectorAll('.menu-link').forEach(link => {
-      link.addEventListener('click', function() {
-        document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
-
-    // Check access on page load
-    checkAdminAccess();
+    renderAdminDashboard();
   </script>
 </body>
 </html>

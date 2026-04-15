@@ -273,72 +273,9 @@
     </div>
   </div>
 
+  <script src="app.js"></script>
   <script>
-    function handleLogin(event) {
-      event.preventDefault();
-      
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const messageDiv = document.getElementById('message');
-
-      // Validasi input
-      if (!email || !password) {
-        showMessage('Semua field harus diisi', 'error');
-        return;
-      }
-
-      // Validasi format email
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        showMessage('Format email tidak valid', 'error');
-        return;
-      }
-
-      // Simulasi login dengan role checking
-      // TODO: Replace dengan Supabase API call
-      console.log('Login attempt:', { email, password });
-      
-      // Mock data untuk testing (nanti ganti dengan Supabase)
-      const mockUsers = {
-        'admin@layanan.com': { password: 'admin123', role: 'admin', name: 'Admin' },
-        'user@layanan.com': { password: 'user123', role: 'user', name: 'User Test' }
-      };
-
-      const user = mockUsers[email];
-      if (user && user.password === password) {
-        showMessage('Login berhasil! Redirecting...', 'success');
-        
-        // Simpan session ke localStorage (temporary, nanti pakai Supabase session)
-        localStorage.setItem('user', JSON.stringify({
-          email: email,
-          role: user.role,
-          name: user.name
-        }));
-        
-        setTimeout(() => {
-          // Redirect sesuai role
-          if (user.role === 'admin') {
-            window.location.href = 'admin-dashboard.html';
-          } else {
-            window.location.href = 'user-dashboard.html';
-          }
-        }, 1500);
-      } else {
-        showMessage('Email atau password salah', 'error');
-      }
-    }
-
-    function showMessage(text, type) {
-      const messageDiv = document.getElementById('message');
-      messageDiv.textContent = text;
-      messageDiv.className = `message show ${type}`;
-      
-      if (type === 'error') {
-        setTimeout(() => {
-          messageDiv.classList.remove('show');
-        }, 4000);
-      }
-    }
+    initDatabase();
   </script>
 </body>
 </html>
