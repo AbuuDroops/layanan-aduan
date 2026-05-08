@@ -374,6 +374,10 @@
   <script src="app.js"></script>
   <script>
     initDatabase();
+    /**
+     * Memeriksa kekuatan password berdasarkan panjang dan variasi karakter.
+     * @param {string} password - Password yang akan diperiksa kekuatannya.
+     */
     function checkPasswordStrength(password) {
       const strengthBar = document.getElementById('strengthBar');
       let strength = 0;
