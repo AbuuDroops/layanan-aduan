@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - Layanan Aduan</title>
+  <title>Kelola Pengguna - Layanan Aduan</title>
   <link rel="stylesheet" href="style.css">
-
 </head>
 <body>
-  <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="nav-container">
       <div class="nav-logo">
@@ -21,9 +19,7 @@
     </div>
   </nav>
 
-  <!-- Dashboard Container -->
   <div class="dashboard-container">
-    <!-- Sidebar -->
     <aside class="dashboard-sidebar">
       <div class="sidebar-header">
         <h3>Menu</h3>
@@ -37,13 +33,11 @@
       </ul>
     </aside>
 
-    <!-- Main Content -->
     <main class="dashboard-main">
-      <!-- Dashboard Header -->
       <div class="dashboard-header">
         <div>
-          <h1>Admin Dashboard</h1>
-          <p style="color: #666; margin: 8px 0 0;">Selamat datang di panel administrasi</p>
+          <h1>Kelola Pengguna</h1>
+          <p style="color: #666; margin: 8px 0 0;">Manajemen hak akses dan role pengguna</p>
         </div>
         <div class="user-menu">
           <div class="user-name" id="userName">Admin User</div>
@@ -51,47 +45,21 @@
         </div>
       </div>
 
-      <!-- Statistics Cards -->
-      <div class="dashboard-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total Laporan</div>
-          <div class="stat-value" id="totalReports">0</div>
-          <div class="stat-change">↑ 12% dari bulan lalu</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Laporan Pending</div>
-          <div class="stat-value" id="pendingReports">0</div>
-          <div class="stat-change">Perlu ditangani</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Laporan Selesai</div>
-          <div class="stat-value" id="completedReports">0</div>
-          <div class="stat-change">96.4% completion rate</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Pengguna</div>
-          <div class="stat-value" id="totalUsers">0</div>
-          <div class="stat-change">↑ 8% dari bulan lalu</div>
-        </div>
-      </div>
-
-      <!-- Reports Section -->
       <div class="content-section">
-        <h2>Laporan Terbaru</h2>
+        <h2>Daftar Pengguna</h2>
         <div class="table-responsive">
           <table>
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Nama Pelapor</th>
-                <th>Satker</th>
-                <th>Lokasi</th>
-                <th>Status</th>
-                <th>Tanggal</th>
+                <th>Nama</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Tgl Bergabung</th>
                 <th>Aksi</th>
               </tr>
             </thead>
-            <tbody id="reportTableBody">
+            <tbody id="userTableBody">
             </tbody>
           </table>
         </div>
@@ -101,7 +69,7 @@
 
   <script src="app.js"></script>
   <script>
-    renderAdminDashboard();
+    renderManageUsers();
   </script>
 </body>
 </html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengaturan - Layanan Aduan</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="index.html">Layanan Aduan</a>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><span class="nav-link" style="color: #2196F3;">Admin Panel</span></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="dashboard-container">
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-header">
+        <h3>Menu</h3>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="admin-dashboard.html" class="menu-link">Dashboard</a></li>
+        <li><a href="kelola_laporan.html" class="menu-link">Kelola Laporan</a></li>
+        <li><a href="manage-users.html" class="menu-link">Kelola Pengguna</a></li>
+        <li><a href="analytics.html" class="menu-link">Analytics</a></li>
+        <li><a href="settings.html" class="menu-link">Pengaturan</a></li>
+      </ul>
+    </aside>
+
+    <main class="dashboard-main">
+      <div class="dashboard-header">
+        <div>
+          <h1>Pengaturan</h1>
+          <p style="color: #666; margin: 8px 0 0;">Konfigurasi sistem Layanan Aduan</p>
+        </div>
+        <div class="user-menu">
+          <div class="user-name" id="userName">Admin User</div>
+          <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+      </div>
+
+      <div class="content-section">
+        <h3>Pengaturan Umum</h3>
+        <form onsubmit="event.preventDefault(); alert('Pengaturan disimpan!');">
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px;">Nama Situs</label>
+            <input type="text" value="Layanan Aduan" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+          </div>
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px;">Email Notifikasi Admin</label>
+            <input type="email" value="admin@layanan.com" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+          </div>
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px;">Maintenance Mode</label>
+            <input type="checkbox"> Aktifkan
+          </div>
+          <button class="btn btn-primary" type="submit">Simpan Perubahan</button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    renderSettings();
+  </script>
+</body>
+</html>

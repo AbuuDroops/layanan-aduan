@@ -1,6 +1,14 @@
 const DB_KEY = 'aduanAppDb';
 const SESSION_KEY = 'aduanAppUser';
 
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 function defaultDatabase() {
   return {
     users: [
@@ -8,7 +16,7 @@ function defaultDatabase() {
         id: 1,
         name: 'Admin',
         email: 'admin@layanan.com',
-        password: 'admin123',
+        password: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
         role: 'admin',
         joinedAt: '2026-04-01'
       },
@@ -16,7 +24,7 @@ function defaultDatabase() {
         id: 2,
         name: 'User Test',
         email: 'user@layanan.com',
-        password: 'user123',
+        password: 'e606e38b0d8c19b24cf0ee3808183162ea7cd63ff7912dbb22b5e803286b4446',
         role: 'user',
         joinedAt: '2026-04-08'
       }
@@ -75,7 +83,7 @@ function initDatabase() {
         id: Date.now(),
         name: 'Admin',
         email: 'admin@layanan.com',
-        password: 'admin123',
+        password: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
         role: 'admin',
         joinedAt: '2026-04-01'
       });
@@ -142,7 +150,7 @@ function formatDate(dateString) {
   return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-function handleLogin(event) {
+async function handleLogin(event) {
   event.preventDefault();
   initDatabase();
 
@@ -160,8 +168,22 @@ function handleLogin(event) {
     return;
   }
 
-  const user = getUserByEmail(email);
-  if (!user || user.password !== password) {
+  const db = initDatabase();
+  const user = db.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+  let passwordMatch = false;
+  if (user && user.password.length === 64) {
+    passwordMatch = user.password === await hashPassword(password);
+  } else if (user) {
+    // Legacy plain text password — migrate to hash on successful login
+    passwordMatch = user.password === password;
+    if (passwordMatch) {
+      user.password = await hashPassword(password);
+      saveDatabase(db);
+    }
+  }
+
+  if (!user || !passwordMatch) {
     showMessage('Email atau password salah', 'error');
     return;
   }
@@ -178,7 +200,7 @@ function handleLogin(event) {
   }, 1200);
 }
 
-function handleRegister(event) {
+async function handleRegister(event) {
   event.preventDefault();
   initDatabase();
 
@@ -219,10 +241,12 @@ function handleRegister(event) {
     return;
   }
 
+  const hashedPassword = await hashPassword(password);
+
   addUser({
     name: fullName,
     email,
-    password,
+    password: hashedPassword,
     role: 'user',
     joinedAt: new Date().toISOString().slice(0, 10)
   });
@@ -256,6 +280,7 @@ function renderAdminDashboard() {
   const user = requireRole('admin');
   if (!user) return;
 
+  updateAdminSidebar('admin-dashboard.html');
   document.getElementById('userName').textContent = user.name || 'Admin User';
 
   const totalReportsElem = document.getElementById('totalReports');
@@ -270,31 +295,167 @@ function renderAdminDashboard() {
 
   const reportTableBody = document.getElementById('reportTableBody');
   if (reportTableBody) {
-    const reports = getAllReports();
-    reportTableBody.innerHTML = reports.map(report => {
-      const badgeClass = getStatusBadgeClass(report.status);
-      const statusLabel = getStatusLabel(report.status);
-      const reporterName = report.name || report.userEmail;
-      const satker = report.satker || report.category || '-';
-      const location = report.location || '-';
-      return `
-        <tr>
-          <td>#ADU${report.id.toString().padStart(3, '0')}</td>
-          <td>${reporterName}</td>
-          <td>${satker}</td>
-          <td>${location}</td>
-          <td><span class="status-badge ${badgeClass}">${statusLabel}</span></td>
-          <td>${formatShortDate(report.createdAt)}</td>
-          <td>
-            <div class="action-buttons">
-              <button class="btn-small btn-view" onclick="viewReport(${report.id})">Lihat</button>
-              <button class="btn-small btn-edit" onclick="editReport(${report.id})">Edit</button>
-            </div>
-          </td>
-        </tr>
-      `;
-    }).join('');
+    const reports = getAllReports().slice(0, 5); // Show only recent 5 on dashboard
+    renderReportTable(reportTableBody, reports);
   }
+}
+
+function renderReportsPage() {
+  const user = requireRole('admin');
+  if (!user) return;
+
+  updateAdminSidebar('kelola_laporan.html');
+  document.getElementById('userName').textContent = user.name || 'Admin User';
+
+  const totalReportsElem = document.getElementById('totalReports');
+  const pendingReportsElem = document.getElementById('pendingReports');
+  const completedReportsElem = document.getElementById('completedReports');
+
+  if (totalReportsElem) totalReportsElem.textContent = countReports();
+  if (pendingReportsElem) pendingReportsElem.textContent = countReports('pending');
+  if (completedReportsElem) completedReportsElem.textContent = countReports('completed');
+
+  const reportTableBody = document.getElementById('reportTableBody');
+  if (reportTableBody) {
+    const reports = getAllReports();
+    renderReportTable(reportTableBody, reports);
+  }
+}
+
+function renderReportTable(container, reports) {
+  if (!reports.length) {
+    container.innerHTML = '<tr><td colspan="7" style="text-align:center;">Tidak ada laporan.</td></tr>';
+    return;
+  }
+
+  container.innerHTML = reports.map(report => {
+    const badgeClass = getStatusBadgeClass(report.status);
+    const statusLabel = getStatusLabel(report.status);
+    const reporterName = report.name || report.userEmail;
+    const satker = report.satker || report.category || '-';
+    const location = report.location || '-';
+    return `
+      <tr>
+        <td>#ADU${report.id.toString().padStart(3, '0')}</td>
+        <td>${reporterName}</td>
+        <td>${satker}</td>
+        <td>${location}</td>
+        <td><span class="status-badge ${badgeClass}">${statusLabel}</span></td>
+        <td>${formatShortDate(report.createdAt)}</td>
+        <td>
+          <div class="action-buttons">
+            <button class="btn-small btn-view" onclick="viewReport(${report.id})">Lihat</button>
+            <button class="btn-small btn-edit" onclick="editReport(${report.id})">Edit</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderManageUsers() {
+  const user = requireRole('admin');
+  if (!user) return;
+
+  updateAdminSidebar('manage-users.html');
+  document.getElementById('userName').textContent = user.name || 'Admin User';
+
+  const db = initDatabase();
+  const userTableBody = document.getElementById('userTableBody');
+  if (userTableBody) {
+    userTableBody.innerHTML = db.users.map(u => `
+      <tr>
+        <td>${u.id}</td>
+        <td>${u.name}</td>
+        <td>${u.email}</td>
+        <td><span class="status-badge ${u.role === 'admin' ? 'status-admin_confirmed' : 'status-user_confirmed'}">${u.role}</span></td>
+        <td>${formatDate(u.joinedAt)}</td>
+        <td>
+          <button class="btn-small btn-edit" onclick="toggleUserRole(${u.id})">Tukar Role</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+}
+
+function toggleUserRole(userId) {
+  const db = initDatabase();
+  const user = db.users.find(u => u.id === userId);
+  if (!user) return;
+  
+  if (user.email === 'admin@layanan.com') {
+    alert('Role admin utama tidak dapat diubah.');
+    return;
+  }
+
+  user.role = user.role === 'admin' ? 'user' : 'admin';
+  saveDatabase(db);
+  renderManageUsers();
+}
+
+function renderAnalytics() {
+  const user = requireRole('admin');
+  if (!user) return;
+
+  updateAdminSidebar('analytics.html');
+  document.getElementById('userName').textContent = user.name || 'Admin User';
+
+  const reports = getAllReports();
+  const categories = {};
+  reports.forEach(r => {
+    const cat = r.satker || r.category || 'Umum';
+    categories[cat] = (categories[cat] || 0) + 1;
+  });
+
+  const analyticsContent = document.getElementById('analyticsContent');
+  if (analyticsContent) {
+    analyticsContent.innerHTML = `
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Laporan</div>
+          <div class="stat-value">${reports.length}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">User Terdaftar</div>
+          <div class="stat-value">${countUsers()}</div>
+        </div>
+      </div>
+      <div class="content-section" style="margin-top: 20px;">
+        <h3>Sebaran Kategori Aduan</h3>
+        <ul style="list-style: none; padding: 0;">
+          ${Object.entries(categories).map(([cat, count]) => `
+            <li style="margin: 10px 0; display: flex; justify-content: space-between; align-items: center;">
+              <span>${cat}</span>
+              <div style="flex-grow: 1; margin: 0 15px; background: #eee; height: 10px; border-radius: 5px; overflow: hidden;">
+                <div style="background: #2196F3; width: ${(count / reports.length) * 100}%; height: 100%;"></div>
+              </div>
+              <span>${count}</span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `;
+  }
+}
+
+function renderSettings() {
+  const user = requireRole('admin');
+  if (!user) return;
+
+  updateAdminSidebar('settings.html');
+  document.getElementById('userName').textContent = user.name || 'Admin User';
+}
+
+function updateAdminSidebar(activePage) {
+  const sidebarLinks = document.querySelectorAll('.menu-link');
+  sidebarLinks.forEach(link => {
+    const href = link.getAttribute('href');
+    if (href === activePage) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
+  });
 }
 
 function renderUserDashboard() {

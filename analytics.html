@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics - Layanan Aduan</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="index.html">Layanan Aduan</a>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><span class="nav-link" style="color: #2196F3;">Admin Panel</span></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="dashboard-container">
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-header">
+        <h3>Menu</h3>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="admin-dashboard.html" class="menu-link">Dashboard</a></li>
+        <li><a href="kelola_laporan.html" class="menu-link">Kelola Laporan</a></li>
+        <li><a href="manage-users.html" class="menu-link">Kelola Pengguna</a></li>
+        <li><a href="analytics.html" class="menu-link">Analytics</a></li>
+        <li><a href="settings.html" class="menu-link">Pengaturan</a></li>
+      </ul>
+    </aside>
+
+    <main class="dashboard-main">
+      <div class="dashboard-header">
+        <div>
+          <h1>Analytics</h1>
+          <p style="color: #666; margin: 8px 0 0;">Analisis data laporan dan pengguna</p>
+        </div>
+        <div class="user-menu">
+          <div class="user-name" id="userName">Admin User</div>
+          <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+      </div>
+
+      <div id="analyticsContent">
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    renderAnalytics();
+  </script>
+</body>
+</html>
